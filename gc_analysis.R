@@ -37,6 +37,30 @@ calculate_at <- function(seq) {
 gc_values <- sapply(sequences, calculate_gc)
 at_values <- sapply(sequences, calculate_at)
 
+sliding_gc <- function(seq, window_size = 5) {
+  
+  seq_length <- nchar(seq)
+  
+  if (window_size > seq_length) {
+    stop("Window size is larger than sequence length.")
+  }
+  
+  gc_values <- c()
+  
+  for (i in 1:(seq_length - window_size + 1)) {
+    
+    window_seq <- substr(seq, i, i + window_size - 1)
+    
+    g_count <- str_count(window_seq, "G")
+    c_count <- str_count(window_seq, "C")
+    
+    gc_content <- (g_count + c_count) / window_size
+    
+    gc_values <- c(gc_values, gc_content)
+  }
+  
+  return(gc_values)
+}
 # Create results data frame
 results <- data.frame(
   Sequence = sub("^>", "", headers),
@@ -45,6 +69,19 @@ results <- data.frame(
   AT_Content = at_values
 )
 
+cat("\nRunning sliding window GC analysis (window size = 5) on first sequence...\n")
+
+first_seq <- sequences[1]
+
+window_gc <- sliding_gc(first_seq, window_size <- as.numeric(readline(prompt="Enter sliding window size: ")))
+window_gc <- sliding_gc(first_seq, window_size)
+
+plot(window_gc,
+     type = "l",
+     col = "blue",
+     main = "Sliding Window GC Content",
+     xlab = "Window Position",
+     ylab = "GC Content")
 # Plot GC content distribution
 hist(results$GC_Content,
      main = "GC Content Distribution",
@@ -54,3 +91,10 @@ hist(results$AT_Content,
      main = "AT Content Distribution",
      xlab = "AT Content",
      col = "pink")
+plot(window_gc,
+     type="l",
+     col="blue",
+     main="Sliding Window GC Content",
+     xlab="Window Position",
+     ylab="GC Content")
+abline(h=mean(window_gc), col="red", lty=2)
