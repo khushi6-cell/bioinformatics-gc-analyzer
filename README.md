@@ -14,3 +14,7 @@ Click Source.
 Example Output
 Include the gc_plot.png image here by clicking:
 Add image → select gc_plot.png
+New Features
+Dynamic FASTA file input
+GC and AT content calculation
+Error handling for missing files
